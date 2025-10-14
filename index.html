@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Sensori Anak</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game-container">
+        <div id="main-menu" class="screen">
+            <h1>Game Sensori Anak</h1>
+            <div class="menu-item" id="start-game">Mulai Game</div>
+            <div class="menu-item" id="player-profile">Profil Pemain</div>
+            <div class="menu-item" id="about-info">Tentang Game</div>
+        </div>
+
+        <div id="game-screen" class="screen hidden">
+            <div class="header">
+                <button class="back-button">Kembali</button>
+                <h2>Pilih Permainan Sensori</h2>
+            </div>
+
+            <div class="game-selection-grid">
+                <div class="game-card" id="game-match-sound">
+                    <img src="https://via.placeholder.com/150" alt="Ikon Mencocokkan Suara">
+                    <h3>Mencocokkan Suara</h3>
+                </div>
+                <div class="game-card" id="game-color-shape">
+                    <img src="https://via.placeholder.com/150" alt="Ikon Mencocokkan Warna dan Bentuk">
+                    <h3>Mencocokkan Warna & Bentuk</h3>
+                </div>
+                <div class="game-card" id="game-puzzle">
+                    <img src="https://via.placeholder.com/150" alt="Ikon Puzzle">
+                    <h3>Teka-teki Sederhana</h3>
+                </div>
+            </div>
+        </div>
+
+        <div id="profile-screen" class="screen hidden">
+            <h2>Profil Pemain</h2>
+            <p>Nama: <span id="player-name">Tuan Cecep</span></p>
+            <p>Level Terakhir: <span id="last-level">1</span></p>
+            <button class="back-button">Kembali</button>
+        </div>
+
+        <div id="info-screen" class="screen hidden">
+            <h2>Tentang Game</h2>
+            <p>Game ini dirancang untuk melatih sensori anak-anak melalui pencocokan suara dan gambar.</p>
+            <p>Dikembangkan oleh Bri, Asisten Koding.</p>
+            <button class="back-button">Kembali</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body></html>

@@ -1,0 +1,139 @@
+/* Atur tampilan dasar halaman web */
+body {
+    /* Hapus jarak bawaan browser */
+    margin: 0;
+    padding: 0;
+    
+    /* Gunakan font yang mudah dibaca */
+    font-family: Arial, sans-serif;
+    
+    /* Atur tampilan agar konten bisa rata di tengah */
+    display: flex;
+    justify-content: center; /* Rata tengah horizontal */
+    align-items: center;     /* Rata tengah vertikal */
+    
+    /* Atur tinggi body agar menutupi seluruh layar */
+    height: 100vh;
+    
+    /* Tambahkan warna latar belakang */
+    background-color: #f0f0f0;
+}
+
+/* Atur gaya untuk kontainer game */
+.game-container {
+    /* Beri bingkai agar terlihat jelas */
+    border: 2px solid #333;
+    
+    /* Beri warna latar belakang */
+    background-color: #fff;
+    
+    /* Beri sedikit lengkungan di sudut */
+    border-radius: 10px;
+    
+    /* Atur ukuran kontainer game */
+    width: 900px;
+    height: 600px;
+    
+    /* Atur tampilan agar elemen di dalamnya bisa diatur */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Atur tampilan setiap "layar" */
+.screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Sembunyikan layar yang tidak aktif */
+.hidden {
+    display: none;
+}
+
+/* Atur tampilan menu */
+.menu-item {
+    font-size: 24px;
+    padding: 15px 30px;
+    margin: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.menu-item:hover {
+    background-color: #45a049;
+}
+
+/* Atur tampilan tombol kembali */
+.back-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Tata letak header */
+.header {
+    width: 100%;
+    position: relative;
+    text-align: center;
+    padding: 10px 0;
+}
+
+/* Atur posisi tombol kembali */
+.header .back-button {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Gaya untuk judul halaman */
+.header h2 {
+    margin: 0;
+    color: #333;
+}
+
+/* Atur kontainer grid untuk pilihan game */
+.game-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Membuat 3 kolom dengan lebar yang sama */
+    gap: 20px; /* Jarak antar item grid */
+    padding: 20px;
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Gaya untuk setiap kartu game */
+.game-card {
+    background-color: #e9ecef;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efek saat kursor di atas kartu */
+.game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.game-card img {
+    width: 100px; /* Ukuran ikon */
+    height: 100px;
+    margin-bottom: 10px;
+}
