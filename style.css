@@ -20,24 +20,28 @@ body {
 }
 
 /* Atur gaya untuk kontainer game */
+/* Atur gaya untuk kontainer game */
 .game-container {
     /* Beri bingkai agar terlihat jelas */
     border: 2px solid #333;
-    
+
     /* Beri warna latar belakang */
     background-color: #fff;
-    
+
     /* Beri sedikit lengkungan di sudut */
     border-radius: 10px;
-    
+
     /* Atur ukuran kontainer game */
     width: 900px;
     height: 600px;
-    
+
     /* Atur tampilan agar elemen di dalamnya bisa diatur */
     display: flex;
     justify-content: center;
     align-items: center;
+
+    /* >>> TAMBAHKAN INI <<< */
+    position: relative; /* Menjadikan kontainer ini sebagai acuan posisi */
 }
 
 /* Atur tampilan setiap "layar" */
@@ -74,7 +78,6 @@ body {
 
 /* Atur tampilan tombol kembali */
 .back-button {
-    margin-top: 20px;
     padding: 10px 20px;
     background-color: #f44336;
     color: white;
@@ -86,17 +89,21 @@ body {
 /* Tata letak header */
 .header {
     width: 100%;
-    position: relative;
+    position: relative; /* Menjadi 'bingkai' atau 'papan' acuan */
     text-align: center;
-    padding: 10px 0;
+    padding: 20px 0; /* Beri sedikit ruang atas dan bawah */
+    /* Kita pindahkan posisi header ke bagian atas layar */
+    position: absolute;
+    top: 0;
 }
 
 /* Atur posisi tombol kembali */
 .header .back-button {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    position: absolute;     /* Mengatur posisi absolut relatif terhadap .header */
+    left: 20px;             /* Jarak 20px dari tepi kiri header */
+    top: 50%;               /* Posisikan 50% dari atas header */
+    transform: translateY(-50%); /* Geser ke atas setengah dari tingginya sendiri agar pas di tengah */
+    margin: 0; /* Hapus margin bawaan agar posisinya akurat */
 }
 
 /* Gaya untuk judul halaman */
@@ -136,4 +143,31 @@ body {
     width: 100px; /* Ukuran ikon */
     height: 100px;
     margin-bottom: 10px;
+}
+
+/* Aturan Tambahan untuk Layar Kecil (seperti HP mode Portrait) */
+@media (max-width: 600px) {
+
+        /* >>> TAMBAHKAN INI <<< */
+    /* Beri jarak atas pada setiap layar agar konten tidak tertimpa header */
+    #game-screen, #profile-screen, #info-screen {
+        padding-top: 80px; /* Jarak aman dari atas. Angka ini bisa disesuaikan */
+        justify-content: flex-start; /* Mulai konten dari atas, bukan tengah */
+    }
+    /* >>> SELESAI <<< */
+    
+    /* Ubah grid pilihan game dari 3 kolom menjadi 1 kolom */
+    .game-selection-grid {
+        grid-template-columns: 1fr; /* Ini artinya: buat 1 kolom saja */
+        gap: 15px; /* Mungkin perlu sedikit mengurangi jarak antar item */
+    }
+
+    /* Mungkin kita juga perlu sedikit memperkecil ukuran kartu game */
+    .game-card {
+        padding: 15px;
+    }
+
+    .game-card h3 {
+        font-size: 18px; /* Perkecil ukuran judul game */
+    }
 }
