@@ -6,6 +6,7 @@
     <title>Game Sensori Anak</title>
 
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     
@@ -57,8 +58,42 @@
             <p>Game ini dirancang untuk melatih sensori anak-anak melalui pencocokan suara dan gambar.</p>
             <p>Dikembangkan oleh Bri, Asisten Koding.</p>
         </div>
+
+                <div id="level-select-color-shape-screen" class="screen hidden">
+            <div class="header">
+                <button class="back-button">Kembali ke Pilihan Game</button>
+                <h2>Pilih Level</h2>
+            </div>
+            <div class="level-selection-grid">
+                <div class="level-card" data-level="1">Level 1</div>
+                <div class="level-card level-locked">Level 2</div>
+                <div class="level-card level-locked">Level 3</div>
+            </div>
+        </div>
+
+
+        <div id="game-play-color-shape-screen" class="screen hidden">
+            <div class="header">
+                <button class="back-button">Kembali ke Level</button>
+                <h2>Cocokkan Warna dan Bentuk</h2>
+            </div>
+
+            <div id="drop-zones-container">
+                <div class="drop-zone" data-shape="circle" data-color="red"></div>
+                <div class="drop-zone" data-shape="square" data-color="blue"></div>
+            </div>
+
+            <div id="shape-pieces-container">
+                <div id="piece-blue-square" class="shape square blue" draggable="true" data-shape="square" data-color="blue"></div>
+                <div id="piece-red-circle" class="shape circle red" draggable="true" data-shape="circle" data-color="red"></div>
+            </div>
+
+             <div id="feedback-message" class="hidden"></div>
+        </div>
+
     </div>
 
     <script src="script.js"></script>
+        <script src="game-color-shape.js"></script>
 
 </body></html>
