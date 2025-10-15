@@ -32,8 +32,10 @@ body {
     border-radius: 10px;
 
     /* Atur ukuran kontainer game */
-    width: 900px;
-    height: 600px;
+    max-width: 900px;
+    max-height: 600px;
+    width: 95%;
+    height: 95%;
 
     /* Atur tampilan agar elemen di dalamnya bisa diatur */
     display: flex;
