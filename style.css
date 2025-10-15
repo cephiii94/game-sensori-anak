@@ -20,7 +20,6 @@ body {
 }
 
 /* Atur gaya untuk kontainer game */
-/* Atur gaya untuk kontainer game */
 .game-container {
     /* Beri bingkai agar terlihat jelas */
     border: 2px solid #333;
@@ -31,20 +30,24 @@ body {
     /* Beri sedikit lengkungan di sudut */
     border-radius: 10px;
 
-    /* Atur ukuran kontainer game */
-    max-width: 900px;
-    max-height: 600px;
-    width: 95%;
+    /* --- PERBAIKAN RESPONSIVE 1 --- */
+    /* Gunakan persentase agar fleksibel di layar kecil */
+    width: 95%; 
     height: 95%;
+
+    /* Tetapkan batas maksimal agar tidak terlalu besar di layar besar */
+    max-width: 900px; 
+    max-height: 600px;
+    /* --- AKHIR PERBAIKAN 1 --- */
 
     /* Atur tampilan agar elemen di dalamnya bisa diatur */
     display: flex;
     justify-content: center;
     align-items: center;
 
-    /* >>> TAMBAHKAN INI <<< */
     position: relative; /* Menjadikan kontainer ini sebagai acuan posisi */
 }
+
 
 /* Atur tampilan setiap "layar" */
 .screen {
@@ -147,8 +150,6 @@ body {
     margin-bottom: 10px;
 }
 
-/* style.css */
-
 /* == GAYA UNTUK PEMILIHAN LEVEL == */
 .level-selection-grid {
     display: flex;
@@ -217,13 +218,6 @@ body {
 .shape.square, .drop-zone[data-shape="square"] {
     border-radius: 10px;
 }
-
-.shape.red { background-color: #e74c3c; }
-.shape.blue { background-color: #3498db; }
-
-/* style.css */
-
-/* Tambahkan gaya untuk bentuk segitiga */
 .shape.triangle, .drop-zone.triangle {
     background-color: transparent; /* Hilangkan warna latar belakang asli */
     border-left: 50px solid transparent;
@@ -232,16 +226,16 @@ body {
     width: 0;
     height: 0;
 }
-
 /* Tambahkan gaya untuk drop-zone segitiga */
 .drop-zone.triangle {
     border-bottom-color: #ccc; /* Warna border putus-putus */
 }
 
-/* Tambahkan class warna baru */
-.shape.green { 
-    border-bottom-color: #2ecc71; /* Warna hijau untuk segitiga */
-}
+/* Class Warna */
+.shape.red { background-color: #e74c3c; }
+.shape.blue { background-color: #3498db; }
+.shape.green { border-bottom-color: #2ecc71; } /* Warna hijau untuk segitiga */
+
 
 /* Gaya untuk feedback message */
 #feedback-message {
@@ -262,26 +256,30 @@ body {
 /* Aturan Tambahan untuk Layar Kecil (seperti HP mode Portrait) */
 @media (max-width: 600px) {
 
-        /* >>> TAMBAHKAN INI <<< */
     /* Beri jarak atas pada setiap layar agar konten tidak tertimpa header */
-    #game-screen, #profile-screen, #info-screen {
-        padding-top: 80px; /* Jarak aman dari atas. Angka ini bisa disesuaikan */
-        justify-content: flex-start; /* Mulai konten dari atas, bukan tengah */
+    #game-screen, #profile-screen, #info-screen, #level-select-color-shape-screen, #game-play-color-shape-screen {
+        padding-top: 80px; 
+        justify-content: flex-start;
     }
-    /* >>> SELESAI <<< */
     
     /* Ubah grid pilihan game dari 3 kolom menjadi 1 kolom */
     .game-selection-grid {
-        grid-template-columns: 1fr; /* Ini artinya: buat 1 kolom saja */
-        gap: 15px; /* Mungkin perlu sedikit mengurangi jarak antar item */
+        grid-template-columns: 1fr;
+        gap: 15px;
     }
 
-    /* Mungkin kita juga perlu sedikit memperkecil ukuran kartu game */
     .game-card {
         padding: 15px;
     }
 
     .game-card h3 {
-        font-size: 18px; /* Perkecil ukuran judul game */
+        font-size: 18px;
+    }
+
+    /* --- PERBAIKAN RESPONSIVE 2 (ANTI-ZOOM) --- */
+    /* Atur agar item di kontainer ini bisa turun baris (wrap) */
+    #drop-zones-container, #shape-pieces-container, .level-selection-grid {
+        flex-wrap: wrap; /* Ini adalah properti kuncinya */
+        justify-content: center; /* Agar item tetap di tengah saat turun baris */
     }
 }
