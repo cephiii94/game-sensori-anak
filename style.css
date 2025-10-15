@@ -219,6 +219,28 @@ body {
 .shape.red { background-color: #e74c3c; }
 .shape.blue { background-color: #3498db; }
 
+/* style.css */
+
+/* Tambahkan gaya untuk bentuk segitiga */
+.shape.triangle, .drop-zone.triangle {
+    background-color: transparent; /* Hilangkan warna latar belakang asli */
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 100px solid; /* Warna akan diisi oleh class .green */
+    width: 0;
+    height: 0;
+}
+
+/* Tambahkan gaya untuk drop-zone segitiga */
+.drop-zone.triangle {
+    border-bottom-color: #ccc; /* Warna border putus-putus */
+}
+
+/* Tambahkan class warna baru */
+.shape.green { 
+    border-bottom-color: #2ecc71; /* Warna hijau untuk segitiga */
+}
+
 /* Gaya untuk feedback message */
 #feedback-message {
     margin-top: 20px;
