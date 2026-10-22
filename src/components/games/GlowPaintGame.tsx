@@ -142,15 +142,15 @@ export const GlowPaintGame: React.FC = () => {
       />
 
       {/* Floating Instructions for toddler/parent */}
-      <div className="absolute top-20 left-0 right-0 flex justify-center pointer-events-none z-20">
-        <div className="bg-white/20 backdrop-blur-md px-5 py-1.5 rounded-full text-white/90 text-sm sm:text-base font-semibold flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-amber-300 animate-spin" />
-          <span>Usap layar dengan jari untuk membuat cahaya!</span>
+      <div className="absolute top-16 sm:top-20 left-0 right-0 flex justify-center pointer-events-none z-20 px-2">
+        <div className="bg-white/20 backdrop-blur-md px-3.5 py-1 sm:px-5 sm:py-1.5 rounded-full text-white/90 text-xs sm:text-base font-semibold flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin shrink-0" />
+          <span className="truncate">Usap layar dengan jari untuk membuat cahaya!</span>
         </div>
       </div>
 
       {/* Bottom Color Palette Bar */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-full shadow-2xl border-2 border-white/60 flex items-center gap-2 sm:gap-3">
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 bg-white/90 backdrop-blur-md px-2.5 py-1.5 sm:px-4 sm:py-2.5 rounded-full shadow-2xl border-2 border-white/60 flex items-center gap-1.5 sm:gap-3 max-w-[96vw] overflow-x-auto">
         {PALETTES.map((item) => (
           <button
             key={item.color}
@@ -158,9 +158,9 @@ export const GlowPaintGame: React.FC = () => {
               sound.playTap();
               setSelectedColor(item.color);
             }}
-            className={`w-11 h-11 sm:w-13 sm:h-13 rounded-full flex items-center justify-center text-xl sm:text-2xl transition-all shadow-md active:scale-95 ${
+            className={`w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-sm sm:text-xl transition-all shadow-md active:scale-95 shrink-0 ${
               selectedColor === item.color
-                ? 'scale-115 ring-4 ring-amber-400 font-bold'
+                ? 'scale-110 ring-2 sm:ring-4 ring-amber-400 font-bold'
                 : 'hover:scale-105'
             }`}
             style={{
@@ -170,18 +170,18 @@ export const GlowPaintGame: React.FC = () => {
                   : item.color
             }}
           >
-            <span className="drop-shadow">{item.preview}</span>
+            <span className="drop-shadow pointer-events-none">{item.preview}</span>
           </button>
         ))}
 
-        <div className="w-[1px] h-8 bg-slate-300 mx-1" />
+        <div className="w-[1px] h-6 sm:h-8 bg-slate-300 mx-0.5 sm:mx-1 shrink-0" />
 
         {/* Clear Canvas Button */}
         <button
           onClick={handleClear}
-          className="px-3.5 py-2 rounded-full bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold text-sm flex items-center gap-1.5 shadow-sm active:scale-95 transition-all"
+          className="px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold text-xs sm:text-sm flex items-center gap-1 shadow-sm active:scale-95 transition-all shrink-0"
         >
-          <Eraser className="w-4 h-4" />
+          <Eraser className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           <span className="hidden sm:inline">Bersihkan</span>
         </button>
       </div>

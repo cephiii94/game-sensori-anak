@@ -44,11 +44,15 @@ export const BubblePopGame: React.FC = () => {
 
   // Spawn bubbles periodically to maintain a cheerful sensory screen
   useEffect(() => {
+    const isMobile = window.innerWidth < 640;
+    const getRandomSize = () => isMobile ? 65 + Math.random() * 35 : 85 + Math.random() * 45;
+    const getRandomX = () => 6 + Math.random() * (isMobile ? 74 : 84);
+
     // Initial batch
     const initialList: Bubble[] = Array.from({ length: 7 }).map(() => ({
       id: bubbleIdCounter.current++,
-      x: 10 + Math.random() * 80,
-      size: 90 + Math.random() * 50,
+      x: getRandomX(),
+      size: getRandomSize(),
       speed: 7 + Math.random() * 4,
       color: BUBBLE_COLORS[Math.floor(Math.random() * BUBBLE_COLORS.length)],
       emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
@@ -61,8 +65,8 @@ export const BubblePopGame: React.FC = () => {
         if (prev.filter((b) => !b.popped).length < 8) {
           const newBubble: Bubble = {
             id: bubbleIdCounter.current++,
-            x: 8 + Math.random() * 84,
-            size: 90 + Math.random() * 50,
+            x: getRandomX(),
+            size: getRandomSize(),
             speed: 7 + Math.random() * 4,
             color: BUBBLE_COLORS[Math.floor(Math.random() * BUBBLE_COLORS.length)],
             emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
@@ -177,11 +181,11 @@ export const BubblePopGame: React.FC = () => {
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-30" />
 
       {/* Cheerful Counter */}
-      <div className="absolute bottom-6 left-6 z-20 bg-white/90 backdrop-blur-md px-5 py-2.5 rounded-full shadow-lg border-2 border-white flex items-center gap-3">
-        <span className="text-3xl">🎈</span>
+      <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 z-20 bg-white/90 backdrop-blur-md px-3.5 py-1.5 sm:px-5 sm:py-2.5 rounded-full shadow-md border-2 border-white flex items-center gap-2 sm:gap-3">
+        <span className="text-2xl sm:text-3xl">🎈</span>
         <div>
-          <p className="text-xs text-slate-500 font-semibold uppercase">Letusan Ceria</p>
-          <p className="text-2xl font-bold text-sky-600 leading-tight">{popCount}</p>
+          <p className="text-[10px] sm:text-xs text-slate-500 font-semibold uppercase leading-tight">Letusan Ceria</p>
+          <p className="text-lg sm:text-2xl font-bold text-sky-600 leading-tight">{popCount}</p>
         </div>
       </div>
 

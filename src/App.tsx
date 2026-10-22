@@ -32,7 +32,7 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <main className="w-screen h-screen overflow-hidden relative select-none">
+    <main className="w-full h-full min-h-[100dvh] max-h-[100dvh] overflow-hidden relative select-none touch-none">
       {currentScreen === 'menu' && <MainMenu />}
       {currentScreen === 'bubble-pop' && <BubblePopGame />}
       {currentScreen === 'shape-match' && <ShapeMatchGame />}

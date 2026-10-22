@@ -108,8 +108,11 @@ export const ShapeMatchGame: React.FC = () => {
 
     const distance = Math.hypot(clientX - targetCenterX, clientY - targetCenterY);
 
-    // Tolerance range for toddler fingers: 120 pixels!
-    if (distance < 120) {
+    // Tolerance range for toddler fingers (fluid for mobile screens)
+    const isMobile = window.innerWidth < 640;
+    const maxSnapDist = isMobile ? 100 : 130;
+
+    if (distance < maxSnapDist) {
       // Match success!
       sound.playPentatonicChime(matchedIds.length + 2);
       sound.triggerHaptic(40);
@@ -127,27 +130,27 @@ export const ShapeMatchGame: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col justify-between overflow-hidden bg-gradient-to-b from-amber-50 via-rose-50 to-orange-100 select-none touch-none p-4 pt-20 pb-8">
+    <div className="relative w-full h-full flex flex-col justify-between overflow-hidden bg-gradient-to-b from-amber-50 via-rose-50 to-orange-100 select-none touch-none p-3 pt-16 pb-4 sm:p-4 sm:pt-20 sm:pb-8">
       <HeaderNav title="🧩 Cocokkan Bentuk" />
 
       {/* Celebration Banner */}
       {celebrating && (
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
-          animate={{ scale: 1.1, opacity: 1 }}
+          animate={{ scale: 1.05, opacity: 1 }}
           exit={{ scale: 0.8, opacity: 0 }}
-          className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm pointer-events-none"
+          className="absolute inset-0 z-50 flex items-center justify-center bg-white/60 backdrop-blur-sm pointer-events-none p-4"
         >
-          <div className="bg-white rounded-3xl p-8 shadow-2xl border-4 border-amber-300 text-center animate-bounce-slow">
-            <span className="text-6xl">🎉🌟</span>
-            <h2 className="text-4xl font-bold text-amber-600 mt-2">Hebat Sekali!</h2>
-            <p className="text-slate-600 text-xl font-semibold mt-1">Semua bentuk pas!</p>
+          <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-4 border-amber-300 text-center animate-bounce-slow max-w-xs sm:max-w-md">
+            <span className="text-5xl sm:text-6xl">🎉🌟</span>
+            <h2 className="text-2xl sm:text-4xl font-bold text-amber-600 mt-2">Hebat Sekali!</h2>
+            <p className="text-slate-600 text-sm sm:text-xl font-semibold mt-1">Semua bentuk pas!</p>
           </div>
         </motion.div>
       )}
 
       {/* Target Silhouettes (Drop Zones) */}
-      <div className="w-full flex justify-around items-center max-w-4xl mx-auto my-auto gap-4">
+      <div className="w-full flex justify-around items-center max-w-4xl mx-auto my-auto gap-2 sm:gap-4 px-1">
         {currentRoundShapes.map((shape) => {
           const isMatched = matchedIds.includes(shape.id);
 
@@ -155,12 +158,12 @@ export const ShapeMatchGame: React.FC = () => {
             <div
               key={`target-${shape.id}`}
               ref={(el) => { targetRefs.current[shape.id] = el; }}
-              className="flex flex-col items-center gap-3"
+              className="flex flex-col items-center gap-1.5 sm:gap-3"
             >
               <div
-                className={`w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-3xl border-4 border-dashed transition-all flex items-center justify-center ${
+                className={`w-20 h-20 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-dashed transition-all flex items-center justify-center ${
                   isMatched
-                    ? `${shape.bgClass} ${shape.borderClass} border-solid shadow-xl scale-105`
+                    ? `${shape.bgClass} ${shape.borderClass} border-solid shadow-lg sm:shadow-xl scale-105`
                     : 'border-slate-300/80 bg-slate-200/50'
                 }`}
               >
@@ -170,30 +173,30 @@ export const ShapeMatchGame: React.FC = () => {
                     animate={{ scale: 1, rotate: 0 }}
                     className="flex flex-col items-center text-white"
                   >
-                    <span className="text-4xl sm:text-5xl">{shape.face}</span>
-                    <span className="font-bold text-sm sm:text-base mt-1 drop-shadow">Pas!</span>
+                    <span className="text-3xl sm:text-5xl">{shape.face}</span>
+                    <span className="font-bold text-xs sm:text-base mt-0.5 sm:mt-1 drop-shadow">Pas!</span>
                   </motion.div>
                 ) : (
-                  <span className="text-3xl sm:text-4xl opacity-30">{shape.face}</span>
+                  <span className="text-2xl sm:text-4xl opacity-30">{shape.face}</span>
                 )}
               </div>
-              <span className="text-slate-500 font-bold text-base sm:text-lg">{shape.name}</span>
+              <span className="text-slate-500 font-bold text-xs sm:text-base">{shape.name}</span>
             </div>
           );
         })}
       </div>
 
       {/* Draggable Shape Pieces (Bottom Tray) */}
-      <div className="w-full max-w-4xl mx-auto bg-white/70 backdrop-blur-md rounded-3xl p-4 sm:p-6 shadow-xl border-2 border-white/80 flex justify-around items-center min-h-[140px] sm:min-h-[180px]">
+      <div className="w-full max-w-4xl mx-auto bg-white/70 backdrop-blur-md rounded-2xl sm:rounded-3xl p-3 sm:p-6 shadow-xl border-2 border-white/80 flex justify-around items-center min-h-[110px] sm:min-h-[180px] gap-2">
         {currentRoundShapes.map((shape) => {
           const isMatched = matchedIds.includes(shape.id);
           if (isMatched) {
             return (
               <div
                 key={`empty-tray-${shape.id}`}
-                className="w-24 h-24 sm:w-32 sm:h-32 opacity-20 border-2 border-dashed border-slate-300 rounded-3xl flex items-center justify-center"
+                className="w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 opacity-20 border-2 border-dashed border-slate-300 rounded-2xl sm:rounded-3xl flex items-center justify-center"
               >
-                <span className="text-2xl">✨</span>
+                <span className="text-xl sm:text-2xl">✨</span>
               </div>
             );
           }
@@ -209,10 +212,10 @@ export const ShapeMatchGame: React.FC = () => {
               onDragEnd={(_, info) => {
                 checkDrop(shape.id, info.point as unknown as PointerEvent);
               }}
-              className={`w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-3xl cursor-grab active:cursor-grabbing flex flex-col items-center justify-center text-white font-bold shadow-xl border-4 ${shape.bgClass} ${shape.borderClass} ${shape.shadowClass} select-none active:scale-105 transition-shadow`}
+              className={`w-20 h-20 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-2xl sm:rounded-3xl cursor-grab active:cursor-grabbing flex flex-col items-center justify-center text-white font-bold shadow-lg sm:shadow-xl border-3 sm:border-4 ${shape.bgClass} ${shape.borderClass} ${shape.shadowClass} select-none active:scale-105 transition-shadow`}
             >
               <span className="text-3xl sm:text-5xl drop-shadow pointer-events-none">{shape.face}</span>
-              <span className="text-xs sm:text-sm mt-1 drop-shadow pointer-events-none">{shape.colorName}</span>
+              <span className="text-[10px] sm:text-xs mt-0.5 drop-shadow pointer-events-none">{shape.colorName}</span>
             </motion.div>
           );
         })}

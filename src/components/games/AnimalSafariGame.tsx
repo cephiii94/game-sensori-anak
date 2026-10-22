@@ -105,32 +105,32 @@ export const AnimalSafariGame: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col justify-between overflow-hidden bg-gradient-to-b from-green-100 via-emerald-50 to-teal-100 select-none touch-none p-4 pt-20 pb-6">
+    <div className="relative w-full h-full flex flex-col justify-between overflow-hidden bg-gradient-to-b from-green-100 via-emerald-50 to-teal-100 select-none touch-none p-3 pt-15 pb-4 sm:p-4 sm:pt-20 sm:pb-6">
       <HeaderNav title="🦁 Cilukba Hewan" />
 
       {/* Floating Active Announcement */}
-      <div className="text-center h-16 flex items-center justify-center">
+      <div className="text-center h-12 sm:h-16 flex items-center justify-center px-2">
         {activeAnimal ? (
           <motion.div
             key={activeAnimal.id + activeAnimal.animalName}
             initial={{ scale: 0.8, y: 10, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
-            className="bg-white/90 backdrop-blur-md px-6 py-2 rounded-full shadow-md border-2 border-emerald-300 inline-flex items-center gap-3"
+            className="bg-white/95 backdrop-blur-md px-4 py-1.5 sm:px-6 sm:py-2 rounded-full shadow-md border-2 border-emerald-300 inline-flex items-center gap-2 max-w-[95%] truncate"
           >
-            <span className="text-2xl">{activeAnimal.animalEmoji}</span>
-            <span className="text-emerald-800 font-bold text-lg sm:text-xl">
+            <span className="text-xl sm:text-2xl shrink-0">{activeAnimal.animalEmoji}</span>
+            <span className="text-emerald-800 font-bold text-xs sm:text-lg truncate">
               {activeAnimal.animalName}: <span className="text-amber-600">{activeAnimal.animalSoundText}</span>
             </span>
           </motion.div>
         ) : (
-          <p className="text-slate-500 font-bold text-base sm:text-lg animate-pulse-gentle">
+          <p className="text-slate-500 font-bold text-xs sm:text-base animate-pulse-gentle">
             Ketuk semak atau awan untuk menemukan hewan! 🔍
           </p>
         )}
       </div>
 
-      {/* Grid of Hiding Spots (3x2 layout, huge clickable cards for toddlers) */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl w-full mx-auto my-auto">
+      {/* Grid of Hiding Spots (responsive 2-cols on mobile, 3-cols on tablet/desktop) */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-6 max-w-4xl w-full mx-auto my-auto px-1">
         {SPOTS.map((spot) => {
           const isOpen = revealedIds.includes(spot.id);
 
@@ -139,7 +139,7 @@ export const AnimalSafariGame: React.FC = () => {
               key={spot.id}
               whileTap={{ scale: 0.93 }}
               onClick={() => handleSpotTap(spot)}
-              className="relative aspect-square rounded-3xl cursor-pointer shadow-lg overflow-hidden flex flex-col items-center justify-center border-4 border-white transition-all bg-white"
+              className="relative aspect-square rounded-2xl sm:rounded-3xl cursor-pointer shadow-md sm:shadow-lg overflow-hidden flex flex-col items-center justify-center border-3 sm:border-4 border-white transition-all bg-white"
             >
               <AnimatePresence mode="wait">
                 {isOpen ? (
@@ -149,15 +149,15 @@ export const AnimalSafariGame: React.FC = () => {
                     animate={{ scale: 1, rotate: [0, -10, 10, 0] }}
                     exit={{ scale: 0 }}
                     transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-                    className="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-amber-50 to-orange-100 p-2"
+                    className="flex flex-col items-center justify-center w-full h-full bg-gradient-to-br from-amber-50 to-orange-100 p-1.5 sm:p-2"
                   >
-                    <span className="text-5xl sm:text-7xl filter drop-shadow animate-wiggle">
+                    <span className="text-4xl sm:text-7xl filter drop-shadow animate-wiggle">
                       {spot.animalEmoji}
                     </span>
-                    <span className="font-bold text-slate-700 text-sm sm:text-base mt-2">
+                    <span className="font-bold text-slate-700 text-xs sm:text-base mt-1 sm:mt-2">
                       {spot.animalName}
                     </span>
-                    <span className="text-xs text-amber-600 font-semibold mt-0.5">
+                    <span className="text-[10px] sm:text-xs text-amber-600 font-semibold">
                       {spot.animalSoundText}
                     </span>
                   </motion.div>
@@ -167,15 +167,15 @@ export const AnimalSafariGame: React.FC = () => {
                     initial={{ scale: 0.8 }}
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
-                    className={`flex flex-col items-center justify-center w-full h-full ${spot.coverColor} p-2 text-white`}
+                    className={`flex flex-col items-center justify-center w-full h-full ${spot.coverColor} p-1.5 sm:p-2 text-white`}
                   >
-                    <span className="text-5xl sm:text-7xl filter drop-shadow animate-bounce-slow">
+                    <span className="text-4xl sm:text-7xl filter drop-shadow animate-bounce-slow">
                       {spot.coverEmoji}
                     </span>
-                    <span className="font-bold text-white text-sm sm:text-base mt-2 drop-shadow">
+                    <span className="font-bold text-white text-xs sm:text-base mt-1 sm:mt-2 drop-shadow">
                       {spot.coverName}
                     </span>
-                    <span className="text-xs bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded-full mt-1 font-semibold">
+                    <span className="text-[10px] sm:text-xs bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded-full mt-0.5 sm:mt-1 font-semibold">
                       Ketuk Aku!
                     </span>
                   </motion.div>
@@ -187,10 +187,10 @@ export const AnimalSafariGame: React.FC = () => {
       </div>
 
       {/* Bottom Button to Hide Animals Again */}
-      <div className="flex justify-center mt-2">
+      <div className="flex justify-center mt-1">
         <button
           onClick={handleReset}
-          className="bg-white/90 hover:bg-white text-emerald-800 font-bold px-6 py-2.5 rounded-full shadow-lg border-2 border-emerald-300 active:scale-95 transition-all text-base flex items-center gap-2"
+          className="bg-white/95 hover:bg-white text-emerald-800 font-bold px-4 py-2 sm:px-6 sm:py-2.5 rounded-full shadow-md border-2 border-emerald-300 active:scale-95 transition-all text-xs sm:text-base flex items-center gap-1.5"
         >
           <span>🙈 Sembunyi Lagi (Cilukba)</span>
         </button>
