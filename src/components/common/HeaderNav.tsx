@@ -8,7 +8,7 @@ interface HeaderNavProps {
 }
 
 export const HeaderNav: React.FC<HeaderNavProps> = ({ title }) => {
-  const { setScreen, soundEnabled, toggleSound, openParentalGate } = useGameStore();
+  const { setScreen, soundEnabled, toggleSound, openParentalGate, openSettings } = useGameStore();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-2.5 py-2 sm:px-6 sm:py-3 pointer-events-none select-none">
@@ -46,7 +46,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ title }) => {
           onClick={() => {
             sound.playTap();
             openParentalGate(() => {
-              alert('Menu Pengaturan Orang Tua:\n- Volume Suara Aktif\n- Durasi Layar: Tanpa Batas\n- Mode Anti-Sentuh: Aktif');
+              openSettings();
             });
           }}
           className="p-2 sm:p-2.5 rounded-full bg-white/95 hover:bg-white text-slate-600 shadow-md border-2 border-slate-200 active:scale-95 transition-all"

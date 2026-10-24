@@ -6,6 +6,8 @@ import { ShapeMatchGame } from './components/games/ShapeMatchGame';
 import { AnimalSafariGame } from './components/games/AnimalSafariGame';
 import { GlowPaintGame } from './components/games/GlowPaintGame';
 import { ParentalGateModal } from './components/common/ParentalGateModal';
+import { SettingsModal } from './components/common/SettingsModal';
+import { OrientationPrompt } from './components/common/OrientationPrompt';
 
 export const App: React.FC = () => {
   const { currentScreen } = useGameStore();
@@ -40,6 +42,8 @@ export const App: React.FC = () => {
       {currentScreen === 'glow-paint' && <GlowPaintGame />}
 
       <ParentalGateModal />
+      <SettingsModal />
+      <OrientationPrompt />
     </main>
   );
 };

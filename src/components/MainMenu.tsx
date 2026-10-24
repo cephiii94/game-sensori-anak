@@ -54,7 +54,7 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 export const MainMenu: React.FC = () => {
-  const { setScreen, soundEnabled, toggleSound, openParentalGate } = useGameStore();
+  const { setScreen, soundEnabled, toggleSound, openParentalGate, openSettings } = useGameStore();
 
   return (
     <div className="relative w-full h-full min-h-[100dvh] flex flex-col justify-between overflow-y-auto overflow-x-hidden bg-gradient-to-b from-sky-200 via-sky-100 to-amber-50 select-none touch-none p-3 sm:p-6 pb-6">
@@ -89,7 +89,7 @@ export const MainMenu: React.FC = () => {
             onClick={() => {
               sound.playTap();
               openParentalGate(() => {
-                alert('Pintu Pengaturan Orang Tua Terbuka!\n\nSemua mini-game dirancang aman tanpa iklan dan tanpa fail state.');
+                openSettings();
               });
             }}
             className="p-2.5 sm:p-3 rounded-full bg-white/95 text-slate-600 shadow-md border-2 border-slate-200 active:scale-95 transition-all"
