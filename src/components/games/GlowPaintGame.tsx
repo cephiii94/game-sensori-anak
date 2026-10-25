@@ -142,10 +142,10 @@ export const GlowPaintGame: React.FC = () => {
       />
 
       {/* Floating Instructions for toddler/parent */}
-      <div className="absolute top-16 sm:top-20 left-0 right-0 flex justify-center pointer-events-none z-20 px-2">
-        <div className="bg-white/20 backdrop-blur-md px-3.5 py-1 sm:px-5 sm:py-1.5 rounded-full text-white/90 text-xs sm:text-base font-semibold flex items-center gap-1.5">
+      <div className="absolute top-3 sm:top-4 left-3 sm:left-5 flex justify-start pointer-events-none z-20 pr-14 sm:pr-16">
+        <div className="bg-white/20 backdrop-blur-md px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full text-white/90 text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-sm">
           <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin shrink-0" />
-          <span className="truncate">Usap layar dengan jari untuk membuat cahaya!</span>
+          <span className="truncate">Sentuh & lukis cahaya dengan jarimu!</span>
         </div>
       </div>
 

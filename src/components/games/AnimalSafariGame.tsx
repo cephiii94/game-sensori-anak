@@ -105,11 +105,11 @@ export const AnimalSafariGame: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col justify-between overflow-hidden bg-gradient-to-b from-green-100 via-emerald-50 to-teal-100 select-none touch-none p-3 pt-15 pb-4 sm:p-4 sm:pt-20 sm:pb-6">
+    <div className="relative w-full h-full flex flex-col justify-between overflow-hidden bg-gradient-to-b from-green-100 via-emerald-50 to-teal-100 select-none touch-none p-3 pt-4 pb-4 sm:p-6 sm:pb-6">
       <HeaderNav title="🦁 Cilukba Hewan" />
 
       {/* Floating Active Announcement */}
-      <div className="text-center h-12 sm:h-16 flex items-center justify-center px-2">
+      <div className="text-center h-12 sm:h-16 flex items-center justify-center px-2 mr-12 sm:mr-16">
         {activeAnimal ? (
           <motion.div
             key={activeAnimal.id + activeAnimal.animalName}
