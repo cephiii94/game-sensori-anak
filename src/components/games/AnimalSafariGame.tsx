@@ -115,7 +115,7 @@ export const AnimalSafariGame: React.FC = () => {
             key={activeAnimal.id + activeAnimal.animalName}
             initial={{ scale: 0.8, y: 10, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
-            className="bg-white/95 backdrop-blur-md px-4 py-1.5 sm:px-6 sm:py-2 rounded-full shadow-md border-2 border-emerald-300 inline-flex items-center gap-2 max-w-[95%] truncate"
+            className="bg-white/95 px-4 py-1.5 sm:px-6 sm:py-2 rounded-full shadow-md border-2 border-emerald-300 inline-flex items-center gap-2 max-w-[95%] truncate transform-gpu"
           >
             <span className="text-xl sm:text-2xl shrink-0">{activeAnimal.animalEmoji}</span>
             <span className="text-emerald-800 font-bold text-xs sm:text-lg truncate">
@@ -175,7 +175,7 @@ export const AnimalSafariGame: React.FC = () => {
                     <span className="font-bold text-white text-xs sm:text-base mt-1 sm:mt-2 drop-shadow">
                       {spot.coverName}
                     </span>
-                    <span className="text-[10px] sm:text-xs bg-white/30 backdrop-blur-sm px-2 py-0.5 rounded-full mt-0.5 sm:mt-1 font-semibold">
+                    <span className="text-[10px] sm:text-xs bg-white/40 px-2 py-0.5 rounded-full mt-0.5 sm:mt-1 font-semibold">
                       Ketuk Aku!
                     </span>
                   </motion.div>

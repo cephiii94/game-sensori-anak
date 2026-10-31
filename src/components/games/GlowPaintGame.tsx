@@ -57,10 +57,16 @@ export const GlowPaintGame: React.FC = () => {
         }
 
         ctx.save();
-        ctx.globalAlpha = p.alpha;
-        ctx.shadowBlur = 18;
-        ctx.shadowColor = p.color;
         ctx.fillStyle = p.color;
+
+        // 1. Soft glowing outer aura (hardware accelerated, zero blur overhead)
+        ctx.globalAlpha = Math.max(0, p.alpha * 0.35);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 2. Bright intense inner core
+        ctx.globalAlpha = Math.max(0, p.alpha);
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
@@ -143,14 +149,14 @@ export const GlowPaintGame: React.FC = () => {
 
       {/* Floating Instructions for toddler/parent */}
       <div className="absolute top-3 sm:top-4 left-3 sm:left-5 flex justify-start pointer-events-none z-20 pr-14 sm:pr-16">
-        <div className="bg-white/20 backdrop-blur-md px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full text-white/90 text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-sm">
+        <div className="bg-slate-800/80 px-3.5 py-1 sm:px-4 sm:py-1.5 rounded-full text-white/95 text-xs sm:text-sm font-semibold flex items-center gap-1.5 shadow-md border border-slate-700">
           <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-spin shrink-0" />
           <span className="truncate">Sentuh & lukis cahaya dengan jarimu!</span>
         </div>
       </div>
 
       {/* Bottom Color Palette Bar */}
-      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 bg-white/90 backdrop-blur-md px-2.5 py-1.5 sm:px-4 sm:py-2.5 rounded-full shadow-2xl border-2 border-white/60 flex items-center gap-1.5 sm:gap-3 max-w-[96vw] overflow-x-auto">
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 bg-white/95 px-2.5 py-1.5 sm:px-4 sm:py-2.5 rounded-full shadow-2xl border-2 border-white flex items-center gap-1.5 sm:gap-3 max-w-[96vw] overflow-x-auto">
         {PALETTES.map((item) => (
           <button
             key={item.color}

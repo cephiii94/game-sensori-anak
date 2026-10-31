@@ -546,7 +546,7 @@ export const BubblePopGame: React.FC = () => {
       <HeaderNav title="🫧 Gelembung Ajaib" />
 
       {/* Theme Atmosphere Selector (Top Left Capsule) */}
-      <div className="fixed top-3 left-3 sm:top-5 sm:left-5 z-40 bg-white/80 hover:bg-white/95 backdrop-blur-md p-1 sm:p-1.5 rounded-full shadow-lg border-2 border-white/80 flex items-center gap-1 sm:gap-1.5 transition-all">
+      <div className="fixed top-3 left-3 sm:top-5 sm:left-5 z-40 bg-white/95 hover:bg-white p-1 sm:p-1.5 rounded-full shadow-md border-2 border-white/90 flex items-center gap-1 sm:gap-1.5 transition-all">
         {THEMES.map((theme) => {
           const isActive = currentTheme === theme.id;
           return (
@@ -582,7 +582,7 @@ export const BubblePopGame: React.FC = () => {
         initial={{ scale: 1.15 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 450, damping: 20 }}
-        className="absolute bottom-3 left-3 sm:bottom-5 sm:left-5 md:bottom-6 md:left-6 z-20 bg-white/75 hover:bg-white/90 backdrop-blur-md px-3 py-1 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-full shadow-sm border border-white/80 flex items-center gap-1.5 sm:gap-2.5 pointer-events-none select-none transition-all"
+        className="absolute bottom-3 left-3 sm:bottom-5 sm:left-5 md:bottom-6 md:left-6 z-20 bg-white/90 hover:bg-white px-3 py-1 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-full shadow-sm border border-white flex items-center gap-1.5 sm:gap-2.5 pointer-events-none select-none transition-all"
       >
         <span className="text-sm sm:text-lg md:text-xl leading-none">🫧</span>
         <span className="text-xs sm:text-base md:text-lg font-bold text-slate-800 tabular-nums leading-none">{popCount}</span>
@@ -597,7 +597,7 @@ export const BubblePopGame: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.85, y: 6 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            className="absolute bottom-3 right-3 sm:bottom-5 sm:right-5 md:bottom-6 md:right-6 z-20 bg-white/80 backdrop-blur-md px-2.5 py-1 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-full shadow-sm border border-white/80 flex items-center gap-1.5 sm:gap-2.5 pointer-events-none select-none transition-all"
+            className="absolute bottom-3 right-3 sm:bottom-5 sm:right-5 md:bottom-6 md:right-6 z-20 bg-white/95 px-2.5 py-1 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-full shadow-sm border border-white flex items-center gap-1.5 sm:gap-2.5 pointer-events-none select-none transition-all"
           >
             {lastPopped.imageUrl ? (
               <img
@@ -677,7 +677,7 @@ export const BubblePopGame: React.FC = () => {
             width: `${bubble.size}px`,
             height: `${bubble.size}px`
           }}
-          className="absolute z-10 cursor-pointer pointer-events-auto touch-manipulation select-none"
+          className="absolute z-10 cursor-pointer pointer-events-auto touch-manipulation select-none transform-gpu will-change-transform"
         >
           {/* Inner Wobble with smooth oscillation (pointer-events-none so hits register on outer target) */}
           <motion.div
@@ -691,9 +691,9 @@ export const BubblePopGame: React.FC = () => {
             }}
             className={`w-full h-full rounded-full bg-gradient-to-br ${bubble.color} ${
               bubble.isGiant
-                ? 'border-4 border-amber-300 ring-4 ring-amber-300/60 shadow-[0_0_30px_rgba(251,191,36,0.6)]'
+                ? 'border-4 border-amber-300 ring-4 ring-amber-300/60 shadow-[0_0_20px_rgba(251,191,36,0.5)]'
                 : 'border-2 shadow-inner'
-            } backdrop-blur-sm flex items-center justify-center transform active:scale-95 transition-transform pointer-events-none relative`}
+            } flex items-center justify-center transform active:scale-95 transition-transform pointer-events-none relative`}
           >
             {/* Shimmering Badge for Giant Bubble */}
             {bubble.isGiant && (
@@ -727,12 +727,12 @@ export const BubblePopGame: React.FC = () => {
                     if (fallback) fallback.classList.remove('hidden');
                   }}
                 />
-                <span className="fallback-emoji hidden text-3xl sm:text-4xl filter drop-shadow select-none pointer-events-none">
+                <span className="fallback-emoji hidden text-3xl sm:text-4xl select-none pointer-events-none">
                   {bubble.character.emoji}
                 </span>
               </div>
             ) : (
-              <span className={`${bubble.isGiant ? 'text-5xl sm:text-6xl' : 'text-3xl sm:text-4xl'} filter drop-shadow select-none pointer-events-none`}>
+              <span className={`${bubble.isGiant ? 'text-5xl sm:text-6xl' : 'text-3xl sm:text-4xl'} select-none pointer-events-none`}>
                 {bubble.character.emoji}
               </span>
             )}

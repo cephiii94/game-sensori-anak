@@ -411,7 +411,7 @@ export const ShapeMatchGame: React.FC = () => {
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1.05, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            className="absolute inset-0 z-50 flex items-center justify-center bg-white/75 backdrop-blur-md pointer-events-none p-4"
+            className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 pointer-events-none p-4"
           >
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-4 border-amber-300 text-center animate-bounce-slow max-w-xs sm:max-w-md">
               <span className="text-5xl sm:text-6xl">🎉🌟</span>
@@ -432,7 +432,7 @@ export const ShapeMatchGame: React.FC = () => {
 
       {/* Top Level Bar & Friendly Helper */}
       <div className="w-full max-w-4xl mx-auto flex items-center justify-between px-2 pt-1 pb-1 pr-14 sm:pr-16">
-        <div className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-amber-200/80 shadow-sm text-amber-900 font-extrabold text-xs sm:text-sm">
+        <div className="inline-flex items-center gap-1.5 bg-white/95 px-3.5 py-1.5 rounded-full border border-amber-300 shadow-sm text-amber-900 font-extrabold text-xs sm:text-sm">
           <Sparkles className="w-4 h-4 text-amber-500 animate-spin" style={{ animationDuration: '6s' }} />
           <span>{levelTitle}</span>
         </div>
@@ -444,7 +444,7 @@ export const ShapeMatchGame: React.FC = () => {
               sound.playTap();
               startLevel(1);
             }}
-            className="inline-flex items-center gap-1 bg-white/80 hover:bg-white text-slate-500 hover:text-slate-700 px-3 py-1.5 rounded-full text-xs font-bold border border-slate-200 shadow-sm transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 bg-white/90 hover:bg-white text-slate-500 hover:text-slate-700 px-3 py-1.5 rounded-full text-xs font-bold border border-slate-200 shadow-sm transition-colors cursor-pointer"
             title="Ulangi dari Level 1"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -454,7 +454,7 @@ export const ShapeMatchGame: React.FC = () => {
       </div>
 
       {/* Target Silhouettes (Puzzle Board Cutouts) */}
-      <div className={`w-full max-w-4xl mx-auto my-auto bg-white/85 backdrop-blur-md rounded-3xl p-4 sm:p-7 shadow-xl border-4 border-amber-200/80 min-h-[180px] sm:min-h-[250px] ${boardGridClass}`}>
+      <div className={`w-full max-w-4xl mx-auto my-auto bg-white/95 rounded-3xl p-4 sm:p-7 shadow-lg border-4 border-amber-200 min-h-[180px] sm:min-h-[250px] ${boardGridClass}`}>
         {currentRoundShapes.map((shape) => {
           const isMatched = matchedIds.includes(shape.id);
           const isTargetForSelected = selectedId === shape.id;
@@ -472,21 +472,21 @@ export const ShapeMatchGame: React.FC = () => {
                     initial={{ scale: 0, rotate: -25 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ type: 'spring', stiffness: 350, damping: 20 }}
-                    className="w-full h-full flex items-center justify-center relative"
+                    className="w-full h-full flex items-center justify-center relative transform-gpu"
                   >
-                    <ShapeSvg type={shape.type} isSilhouette={false} className="w-full h-full drop-shadow-md" />
+                    <ShapeSvg type={shape.type} isSilhouette={false} className="w-full h-full" />
                     <div className="absolute -bottom-2 bg-amber-400 text-white font-black text-[11px] sm:text-xs px-2.5 py-0.5 rounded-full shadow-md">
                       Pas! ⭐
                     </div>
                   </motion.div>
                 ) : (
-                  <div className={`w-full h-full flex items-center justify-center transition-all ${
-                    isTargetForSelected ? 'scale-110 drop-shadow-lg' : 'hover:scale-105'
+                  <div className={`w-full h-full flex items-center justify-center transition-transform ${
+                    isTargetForSelected ? 'scale-110' : 'hover:scale-105'
                   }`}>
                     <ShapeSvg 
                       type={shape.type} 
                       isSilhouette={true} 
-                      className={`w-full h-full drop-shadow-inner ${isTargetForSelected ? 'opacity-100' : 'opacity-85'}`} 
+                      className={`w-full h-full ${isTargetForSelected ? 'opacity-100' : 'opacity-80'}`} 
                     />
                   </div>
                 )}
@@ -500,7 +500,7 @@ export const ShapeMatchGame: React.FC = () => {
       </div>
 
       {/* Draggable Shape Pieces (Bottom Tray) */}
-      <div className={`w-full max-w-4xl mx-auto bg-amber-100/75 backdrop-blur-md rounded-3xl p-3 sm:p-6 shadow-xl border-2 border-amber-200/90 min-h-[130px] sm:min-h-[190px] ${trayGridClass}`}>
+      <div className={`w-full max-w-4xl mx-auto bg-amber-100/90 rounded-3xl p-3 sm:p-6 shadow-lg border-2 border-amber-300 min-h-[130px] sm:min-h-[190px] ${trayGridClass}`}>
         {trayShapes.map((shape) => {
           const isMatched = matchedIds.includes(shape.id);
           const isSelected = selectedId === shape.id;
@@ -524,7 +524,7 @@ export const ShapeMatchGame: React.FC = () => {
               dragElastic={0}
               dragMomentum={false}
               dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
-              whileDrag={{ scale: 1.15, zIndex: 50 }}
+              whileDrag={{ scale: 1.1, zIndex: 50 }}
               onDragStart={() => {
                 sound.playBoing();
                 setSelectedId(shape.id);
@@ -533,11 +533,11 @@ export const ShapeMatchGame: React.FC = () => {
                 checkDrop(shape.id, info.point.x, info.point.y);
               }}
               onClick={() => handlePieceClick(shape.id)}
-              className={`${trayPieceSizeClass} cursor-grab active:cursor-grabbing flex items-center justify-center select-none touch-none ${
-                isSelected ? 'scale-110 drop-shadow-2xl' : 'hover:scale-105'
+              className={`${trayPieceSizeClass} cursor-grab active:cursor-grabbing flex items-center justify-center select-none touch-none transform-gpu will-change-transform ${
+                isSelected ? 'scale-110' : 'hover:scale-105'
               }`}
             >
-              <ShapeSvg type={shape.type} isSilhouette={false} className="w-full h-full drop-shadow-xl pointer-events-none" />
+              <ShapeSvg type={shape.type} isSilhouette={false} className="w-full h-full pointer-events-none" />
             </motion.div>
           );
         })}

@@ -43,7 +43,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ title }) => {
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
         onClick={handleOpenMenu}
-        className="fixed top-3 right-3 sm:top-5 sm:right-5 z-40 p-2.5 sm:p-3 rounded-2xl bg-white/90 hover:bg-white text-slate-700 shadow-xl border-2 border-white/80 backdrop-blur-md flex items-center justify-center transition-all cursor-pointer pointer-events-auto"
+        className="fixed top-3 right-3 sm:top-5 sm:right-5 z-40 p-2.5 sm:p-3 rounded-2xl bg-white/95 hover:bg-white text-slate-700 shadow-md border-2 border-white flex items-center justify-center transition-all cursor-pointer pointer-events-auto"
         aria-label="Menu Permainan"
       >
         <Menu className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
@@ -52,7 +52,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({ title }) => {
       {/* Pop-up Pause Menu */}
       <AnimatePresence>
         {menuOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 select-none">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 select-none">
             <motion.div
               initial={{ scale: 0.85, opacity: 0, y: 15 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
