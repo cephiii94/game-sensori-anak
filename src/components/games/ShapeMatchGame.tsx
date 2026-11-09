@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Sparkles, Trophy, RotateCcw } from 'lucide-react';
+import { Sparkles, RotateCcw } from 'lucide-react';
 import { HeaderNav } from '../common/HeaderNav';
 import { sound } from '../../audio/soundManager';
 import { useGameStore } from '../../store/useGameStore';
@@ -356,23 +356,17 @@ export const ShapeMatchGame: React.FC = () => {
   const shapeCount = currentRoundShapes.length;
   const targetSlotSizeClass =
     shapeCount === 1
-      ? 'w-36 h-36 sm:w-52 sm:h-52 md:w-60 md:h-60'
+      ? 'w-32 h-32 sm:w-52 sm:h-52 md:w-60 md:h-60'
       : shapeCount === 2
       ? 'w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48'
       : shapeCount === 3
       ? 'w-22 h-22 sm:w-36 sm:h-36 md:w-44 md:h-44'
-      : 'w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36';
+      : 'w-22 h-22 sm:w-28 sm:h-28 md:w-36 md:h-36';
 
-  const trayPieceSizeClass =
-    shapeCount === 1
-      ? 'w-36 h-36 sm:w-48 sm:h-48 md:w-56 md:h-56'
-      : shapeCount === 2
-      ? 'w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44'
-      : shapeCount === 3
-      ? 'w-22 h-22 sm:w-32 sm:h-32 md:w-40 md:h-40'
-      : 'w-22 h-22 sm:w-28 sm:h-28 md:w-34 md:h-34';
+  // Fixed consistent piece size inside the bottom tray across all levels
+  const trayPieceSizeClass = 'w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36';
 
-  // Dynamic layout grid for Board and Tray (switches to 2x2 on mobile for 4 shapes)
+  // Dynamic layout grid for Target Board
   const boardGridClass =
     shapeCount === 1
       ? 'flex justify-center items-center'
@@ -382,14 +376,9 @@ export const ShapeMatchGame: React.FC = () => {
       ? 'grid grid-cols-3 justify-items-center gap-2 sm:gap-6 max-w-2xl mx-auto'
       : 'grid grid-cols-2 sm:grid-cols-4 justify-items-center gap-3 sm:gap-6 max-w-3xl mx-auto';
 
-  const trayGridClass =
-    shapeCount === 1
-      ? 'flex justify-center items-center'
-      : shapeCount === 2
-      ? 'grid grid-cols-2 justify-items-center max-w-md mx-auto gap-4 sm:gap-8'
-      : shapeCount === 3
-      ? 'grid grid-cols-3 justify-items-center gap-2 sm:gap-6 max-w-2xl mx-auto'
-      : 'grid grid-cols-2 sm:grid-cols-4 justify-items-center gap-3 sm:gap-6 max-w-3xl mx-auto';
+  // Unmatched shapes for mobile single-piece queue
+  const unmatchedTrayShapes = trayShapes.filter((s) => !matchedIds.includes(s.id));
+  const activeMobileShape = unmatchedTrayShapes[0] || null;
 
   const levelTitle =
     level === 1
@@ -499,48 +488,90 @@ export const ShapeMatchGame: React.FC = () => {
         })}
       </div>
 
-      {/* Draggable Shape Pieces (Bottom Tray) */}
-      <div className={`w-full max-w-4xl mx-auto bg-amber-100/90 rounded-3xl p-3 sm:p-6 shadow-lg border-2 border-amber-300 min-h-[130px] sm:min-h-[190px] ${trayGridClass}`}>
-        {trayShapes.map((shape) => {
-          const isMatched = matchedIds.includes(shape.id);
-          const isSelected = selectedId === shape.id;
-
-          if (isMatched) {
-            return (
-              <div
-                key={`empty-tray-${shape.id}`}
-                className={`${trayPieceSizeClass} opacity-25 border-2 border-dashed border-amber-300 rounded-3xl flex items-center justify-center`}
-              >
-                <span className="text-2xl sm:text-3xl">✨</span>
-              </div>
-            );
-          }
-
-          return (
+      {/* Draggable Shape Pieces (Bottom Tray - Consistent Size) */}
+      <div className="w-full max-w-4xl mx-auto bg-amber-100/90 rounded-3xl p-3 sm:p-5 shadow-lg border-2 border-amber-300 h-[136px] sm:h-[180px] md:h-[200px] flex items-center justify-center shrink-0">
+        {/* Mobile View (< 640px): Always displays 1 shape at a time */}
+        <div className="flex sm:hidden w-full h-full items-center justify-center relative">
+          {activeMobileShape ? (
             <motion.div
-              key={`piece-${shape.id}`}
+              key={`mobile-piece-${activeMobileShape.id}`}
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: selectedId === activeMobileShape.id ? 1.1 : 1, opacity: 1 }}
               drag
               dragSnapToOrigin
               dragElastic={0}
               dragMomentum={false}
               dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
-              whileDrag={{ scale: 1.1, zIndex: 50 }}
+              whileDrag={{ scale: 1.15, zIndex: 50 }}
               onDragStart={() => {
                 sound.playBoing();
-                setSelectedId(shape.id);
+                setSelectedId(activeMobileShape.id);
               }}
               onDragEnd={(_, info) => {
-                checkDrop(shape.id, info.point.x, info.point.y);
+                checkDrop(activeMobileShape.id, info.point.x, info.point.y);
               }}
-              onClick={() => handlePieceClick(shape.id)}
-              className={`${trayPieceSizeClass} cursor-grab active:cursor-grabbing flex items-center justify-center select-none touch-none transform-gpu will-change-transform ${
-                isSelected ? 'scale-110' : 'hover:scale-105'
-              }`}
+              onClick={() => handlePieceClick(activeMobileShape.id)}
+              className={`${trayPieceSizeClass} cursor-grab active:cursor-grabbing flex items-center justify-center select-none touch-none transform-gpu will-change-transform`}
             >
-              <ShapeSvg type={shape.type} isSilhouette={false} className="w-full h-full pointer-events-none" />
+              <ShapeSvg type={activeMobileShape.type} isSilhouette={false} className="w-full h-full pointer-events-none" />
             </motion.div>
-          );
-        })}
+          ) : (
+            <div className={`${trayPieceSizeClass} opacity-25 border-2 border-dashed border-amber-300 rounded-3xl flex items-center justify-center`}>
+              <span className="text-2xl">✨</span>
+            </div>
+          )}
+
+          {/* Queue indicator when more than 1 shape remains on small screen */}
+          {unmatchedTrayShapes.length > 1 && (
+            <div className="absolute right-2 bottom-1 bg-amber-200/90 text-amber-900 font-extrabold text-[11px] px-2.5 py-1 rounded-full border border-amber-300 shadow-xs">
+              +{unmatchedTrayShapes.length - 1} lagi
+            </div>
+          )}
+        </div>
+
+        {/* Desktop / Tablet View (>= 640px): Fits up to 4 shapes in a single consistent row */}
+        <div className="hidden sm:flex w-full h-full items-center justify-center gap-6 md:gap-8">
+          {trayShapes.map((shape) => {
+            const isMatched = matchedIds.includes(shape.id);
+            const isSelected = selectedId === shape.id;
+
+            if (isMatched) {
+              return (
+                <div
+                  key={`empty-tray-${shape.id}`}
+                  className={`${trayPieceSizeClass} shrink-0 opacity-25 border-2 border-dashed border-amber-300 rounded-3xl flex items-center justify-center`}
+                >
+                  <span className="text-2xl sm:text-3xl">✨</span>
+                </div>
+              );
+            }
+
+            return (
+              <motion.div
+                key={`piece-${shape.id}`}
+                drag
+                dragSnapToOrigin
+                dragElastic={0}
+                dragMomentum={false}
+                dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
+                whileDrag={{ scale: 1.1, zIndex: 50 }}
+                onDragStart={() => {
+                  sound.playBoing();
+                  setSelectedId(shape.id);
+                }}
+                onDragEnd={(_, info) => {
+                  checkDrop(shape.id, info.point.x, info.point.y);
+                }}
+                onClick={() => handlePieceClick(shape.id)}
+                className={`${trayPieceSizeClass} shrink-0 cursor-grab active:cursor-grabbing flex items-center justify-center select-none touch-none transform-gpu will-change-transform ${
+                  isSelected ? 'scale-110' : 'hover:scale-105'
+                }`}
+              >
+                <ShapeSvg type={shape.type} isSilhouette={false} className="w-full h-full pointer-events-none" />
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
