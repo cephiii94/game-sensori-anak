@@ -199,8 +199,6 @@ const BUBBLE_COLORS = [
   'from-orange-300/80 to-amber-400/80 border-orange-300'
 ];
 
-const MAX_ACTIVE_BUBBLES = 9;
-
 export const BubblePopGame: React.FC = () => {
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
   const [popCount, setPopCount] = useState<number>(0);
@@ -212,6 +210,12 @@ export const BubblePopGame: React.FC = () => {
   const poppedSetRef = useRef<Set<number>>(new Set());
   const bubblesRef = useRef<Bubble[]>([]);
   const themeRef = useRef<GameTheme>('sky');
+  const isParticleLoopRunningRef = useRef(false);
+  const animFrameIdRef = useRef<number | null>(null);
+
+  // Dynamic cap: 6 bubbles on mobile (smooth 60fps on Mali GPU), 8 on wider screens
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const maxActiveBubbles = isMobile ? 6 : 8;
 
   // Keep bubblesRef and themeRef synchronized for spawn calculations
   useEffect(() => {
@@ -316,9 +320,11 @@ export const BubblePopGame: React.FC = () => {
 
   // Continuous Spawner & Staggered Initialization
   useEffect(() => {
-    // 1. Initial batch distributed across screen heights (4th bubble is guaranteed giant)
-    const initialHeights = ['15vh', '35vh', '55vh', '75vh', '95vh', '105vh', '115vh'];
-    const initialBubbles = initialHeights.map((h, idx) => createBubbleData(h, idx === 3));
+    // 1. Initial batch distributed across screen heights (middle bubble is guaranteed giant)
+    const initialHeights = isMobile
+      ? ['18vh', '42vh', '68vh', '92vh', '112vh']
+      : ['15vh', '35vh', '55vh', '75vh', '95vh', '105vh', '115vh'];
+    const initialBubbles = initialHeights.map((h, idx) => createBubbleData(h, idx === (isMobile ? 2 : 3)));
     setBubbles(initialBubbles);
 
     // 2. Continuous interval to clean up old off-screen bubbles & spawn new ones
@@ -331,9 +337,9 @@ export const BubblePopGame: React.FC = () => {
           return lifetime < b.speed + 1.5;
         });
 
-        // Maintain constant stream of bubbles
-        if (alive.length < MAX_ACTIVE_BUBBLES) {
-          const needed = MAX_ACTIVE_BUBBLES - alive.length;
+        // Maintain constant stream of bubbles capped for mobile smoothness
+        if (alive.length < maxActiveBubbles) {
+          const needed = maxActiveBubbles - alive.length;
           const toAdd = Math.min(2, needed);
           const newBubbles: Bubble[] = [];
           for (let i = 0; i < toAdd; i++) {
@@ -344,37 +350,39 @@ export const BubblePopGame: React.FC = () => {
 
         return alive;
       });
-    }, 700);
+    }, 850);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Particle explosion loop for popped bubbles
-  useEffect(() => {
-    let animId: number;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener('resize', resize);
+  // On-demand Particle Loop: runs ONLY when particles exist (Zero GPU/CPU cost when idle)
+  const runParticleLoop = () => {
+    if (isParticleLoopRunningRef.current) return;
+    isParticleLoopRunningRef.current = true;
 
     const render = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) {
+        isParticleLoopRunningRef.current = false;
+        return;
+      }
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        isParticleLoopRunningRef.current = false;
+        return;
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      particlesRef.current.forEach((p, index) => {
+      for (let i = particlesRef.current.length - 1; i >= 0; i--) {
+        const p = particlesRef.current[i];
         p.x += p.vx;
         p.y += p.vy;
         p.vy += 0.15; // gentle gravity
         p.alpha -= 0.025;
 
         if (p.alpha <= 0) {
-          particlesRef.current.splice(index, 1);
+          particlesRef.current.splice(i, 1);
         } else {
           ctx.save();
           ctx.globalAlpha = Math.max(0, p.alpha);
@@ -384,16 +392,31 @@ export const BubblePopGame: React.FC = () => {
           ctx.fill();
           ctx.restore();
         }
-      });
+      }
 
-      animId = requestAnimationFrame(render);
+      if (particlesRef.current.length > 0) {
+        animFrameIdRef.current = requestAnimationFrame(render);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        isParticleLoopRunningRef.current = false;
+      }
     };
 
-    render();
+    animFrameIdRef.current = requestAnimationFrame(render);
+  };
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
     return () => {
-      cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
+      if (animFrameIdRef.current) cancelAnimationFrame(animFrameIdRef.current);
     };
   }, []);
 
@@ -413,6 +436,7 @@ export const BubblePopGame: React.FC = () => {
         size: (count > 20 ? 5 : 4) + Math.random() * 6
       });
     }
+    runParticleLoop();
   };
 
   const handlePop = (id: number, e: React.SyntheticEvent) => {
@@ -444,8 +468,8 @@ export const BubblePopGame: React.FC = () => {
       // 2. Confetti burst centered at popping position
       try {
         confetti({
-          particleCount: 42,
-          spread: 75,
+          particleCount: isMobile ? 28 : 42,
+          spread: 70,
           origin: {
             x: Math.max(0.08, Math.min(0.92, clientX / window.innerWidth)),
             y: Math.max(0.08, Math.min(0.92, clientY / window.innerHeight))
@@ -457,7 +481,7 @@ export const BubblePopGame: React.FC = () => {
       }
 
       // 3. Extra large particle burst
-      spawnParticles(clientX, clientY, 34);
+      spawnParticles(clientX, clientY, isMobile ? 22 : 32);
 
       // 4. Bonus +5 points for toddlers!
       setPopCount((prev) => prev + 5);
@@ -470,15 +494,14 @@ export const BubblePopGame: React.FC = () => {
         category: poppedBubble.character.category
       });
 
-      // 6. SPLIT INTO 3-4 BABY BUBBLES floating upwards from pop location!
-      const babyCount = 3 + Math.floor(Math.random() * 2); // 3 or 4
+      // 6. SPLIT INTO 2-3 BABY BUBBLES floating upwards from pop location!
+      const babyCount = isMobile ? 2 : 3;
       const bubbleYPercent = Math.max(12, Math.min(88, (clientY / window.innerHeight) * 100));
       const babyBubbles: Bubble[] = [];
 
       for (let i = 0; i < babyCount; i++) {
         const xOffset = (i - (babyCount - 1) / 2) * 8 + (Math.random() * 4 - 2);
         const babyX = Math.max(6, Math.min(84, poppedBubble.x + xOffset));
-        const isMobile = window.innerWidth < 640;
         const babySize = isMobile ? 55 + Math.random() * 15 : 70 + Math.random() * 20;
         const babySpeed = 5.2 + Math.random() * 2;
 
@@ -495,11 +518,12 @@ export const BubblePopGame: React.FC = () => {
         });
       }
 
-      // Replace giant with baby bubbles + 1 replacement from bottom
+      // Replace giant with baby bubbles bounded to maxActiveBubbles
       setBubbles((prev) => {
         const filtered = prev.filter((b) => b.id !== id);
-        const replacement = createBubbleData('110vh');
-        return [...filtered, ...babyBubbles, replacement];
+        const slotsAvailable = Math.max(1, maxActiveBubbles - filtered.length);
+        const spawnedBabies = babyBubbles.slice(0, slotsAvailable);
+        return [...filtered, ...spawnedBabies];
       });
     } else {
       // Regular bubble pop
@@ -508,7 +532,7 @@ export const BubblePopGame: React.FC = () => {
       sound.triggerHaptic(30);
 
       // Visual burst
-      spawnParticles(clientX, clientY, 18);
+      spawnParticles(clientX, clientY, isMobile ? 12 : 18);
       setPopCount((prev) => prev + 1);
 
       if (poppedBubble) {
@@ -613,12 +637,12 @@ export const BubblePopGame: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Ambient Theme Atmosphere Decorations */}
+      {/* Ambient Theme Atmosphere Decorations (Zero Blur Filter: GPU-friendly gradients) */}
       {currentTheme === 'sky' && (
         <>
-          <div className="absolute top-12 left-10 w-48 h-20 bg-white/40 rounded-full blur-xl pointer-events-none animate-pulse-gentle" />
-          <div className="absolute top-28 right-16 w-64 h-24 bg-white/50 rounded-full blur-2xl pointer-events-none animate-pulse-gentle" />
-          <div className="absolute -top-10 -left-10 w-48 h-48 bg-amber-200/35 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-12 left-10 w-48 h-20 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.7)_0%,transparent_70%)] pointer-events-none" />
+          <div className="absolute top-28 right-16 w-64 h-24 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.75)_0%,transparent_70%)] pointer-events-none" />
+          <div className="absolute -top-10 -left-10 w-48 h-48 bg-[radial-gradient(ellipse_at_center,rgba(254,240,138,0.5)_0%,transparent_70%)] pointer-events-none" />
         </>
       )}
 
@@ -626,9 +650,9 @@ export const BubblePopGame: React.FC = () => {
         <>
           {/* Underwater Sunlight Caustics & Seaweed */}
           <div className="absolute top-0 inset-x-0 h-48 bg-gradient-to-b from-cyan-200/20 via-sky-300/10 to-transparent pointer-events-none" />
-          <div className="absolute bottom-3 left-8 text-3xl opacity-40 pointer-events-none animate-pulse select-none">🌿</div>
-          <div className="absolute bottom-4 right-12 text-3xl opacity-40 pointer-events-none animate-pulse select-none">🪸</div>
-          <div className="absolute bottom-6 left-1/3 text-2xl opacity-35 pointer-events-none animate-pulse select-none">🌿</div>
+          <div className="absolute bottom-3 left-8 text-3xl opacity-40 pointer-events-none select-none">🌿</div>
+          <div className="absolute bottom-4 right-12 text-3xl opacity-40 pointer-events-none select-none">🪸</div>
+          <div className="absolute bottom-6 left-1/3 text-2xl opacity-35 pointer-events-none select-none">🌿</div>
         </>
       )}
 
@@ -645,13 +669,13 @@ export const BubblePopGame: React.FC = () => {
       {currentTheme === 'night' && (
         <>
           {/* Peaceful Smiling Moon & Twinkling Stars (Night-Sensory Calm) */}
-          <div className="absolute top-12 right-8 sm:top-14 sm:right-16 text-3xl sm:text-4xl pointer-events-none select-none drop-shadow-[0_0_12px_rgba(253,224,71,0.6)] animate-pulse">
+          <div className="absolute top-12 right-8 sm:top-14 sm:right-16 text-3xl sm:text-4xl pointer-events-none select-none">
             🌙
           </div>
-          <div className="absolute top-20 left-16 text-yellow-200/80 text-sm sm:text-base pointer-events-none select-none animate-ping">✨</div>
-          <div className="absolute top-36 right-36 text-yellow-100/70 text-xs sm:text-sm pointer-events-none select-none animate-pulse">⭐</div>
-          <div className="absolute top-52 left-1/4 text-yellow-200/70 text-base pointer-events-none select-none animate-ping">✨</div>
-          <div className="absolute bottom-32 right-1/4 text-yellow-100/60 text-xs pointer-events-none select-none animate-pulse">⭐</div>
+          <div className="absolute top-20 left-16 text-yellow-200/80 text-sm sm:text-base pointer-events-none select-none">✨</div>
+          <div className="absolute top-36 right-36 text-yellow-100/70 text-xs sm:text-sm pointer-events-none select-none">⭐</div>
+          <div className="absolute top-52 left-1/4 text-yellow-200/70 text-base pointer-events-none select-none">✨</div>
+          <div className="absolute bottom-32 right-1/4 text-yellow-100/60 text-xs pointer-events-none select-none">⭐</div>
         </>
       )}
 
@@ -666,8 +690,6 @@ export const BubblePopGame: React.FC = () => {
             ease: 'linear'
           }}
           onPointerDown={(e) => handlePop(bubble.id, e)}
-          onTouchStart={(e) => handlePop(bubble.id, e)}
-          onClick={(e) => handlePop(bubble.id, e)}
           onPointerEnter={(e) => {
             // Swipe-to-pop support when finger or mouse button is held down
             if (e.buttons > 0) handlePop(bubble.id, e);
@@ -679,20 +701,12 @@ export const BubblePopGame: React.FC = () => {
           }}
           className="absolute z-10 cursor-pointer pointer-events-auto touch-manipulation select-none transform-gpu will-change-transform"
         >
-          {/* Inner Wobble with smooth oscillation (pointer-events-none so hits register on outer target) */}
-          <motion.div
-            animate={{
-              x: bubble.isGiant ? [-15, 15, -15] : [-10, 10, -10],
-              scale: bubble.isGiant ? [1, 1.08, 0.94, 1] : [1, 1.05, 0.96, 1]
-            }}
-            transition={{
-              x: { duration: bubble.isGiant ? 4.2 : 3.2, repeat: Infinity, ease: 'easeInOut' },
-              scale: { duration: bubble.isGiant ? 3.0 : 2.4, repeat: Infinity, ease: 'easeInOut' }
-            }}
+          {/* Inner Wobble using GPU Compositor CSS keyframes (Zero JS thread overhead!) */}
+          <div
             className={`w-full h-full rounded-full bg-gradient-to-br ${bubble.color} ${
               bubble.isGiant
-                ? 'border-4 border-amber-300 ring-4 ring-amber-300/60 shadow-[0_0_20px_rgba(251,191,36,0.5)]'
-                : 'border-2 shadow-inner'
+                ? 'border-4 border-amber-300 ring-4 ring-amber-300/60 shadow-[0_0_18px_rgba(251,191,36,0.5)] animate-bubble-wobble-giant'
+                : 'border-2 shadow-inner animate-bubble-wobble'
             } flex items-center justify-center transform active:scale-95 transition-transform pointer-events-none relative`}
           >
             {/* Shimmering Badge for Giant Bubble */}
@@ -736,7 +750,7 @@ export const BubblePopGame: React.FC = () => {
                 {bubble.character.emoji}
               </span>
             )}
-          </motion.div>
+          </div>
         </motion.div>
       ))}
     </div>

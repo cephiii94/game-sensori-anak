@@ -19,3 +19,32 @@
   box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   transform: translateY(8px);
 }
+
+/* GPU Compositor-accelerated Bubble Wobble (Zero JavaScript thread overhead) */
+@keyframes bubble-wobble {
+  0%, 100% {
+    transform: translate3d(-6px, 0, 0) scale(1, 1.03);
+  }
+  50% {
+    transform: translate3d(6px, 0, 0) scale(1.03, 0.97);
+  }
+}
+
+@keyframes bubble-wobble-giant {
+  0%, 100% {
+    transform: translate3d(-10px, 0, 0) scale(1, 1.05);
+  }
+  50% {
+    transform: translate3d(10px, 0, 0) scale(1.05, 0.95);
+  }
+}
+
+.animate-bubble-wobble {
+  animation: bubble-wobble 3.2s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-bubble-wobble-giant {
+  animation: bubble-wobble 4.2s ease-in-out infinite;
+  will-change: transform;
+}
